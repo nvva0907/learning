@@ -2,10 +2,14 @@ package com.learning.apps.controllers;
 
 
 import com.learning.apps.dtos.MailDTO;
+import com.learning.apps.exceptions.BadRequestException;
+import com.learning.apps.responses.CustomResponse;
 import com.learning.domains.configurations.kafka.ProducerConfig;
 import com.learning.domains.configurations.kafka.dtos.EventDTO;
 import com.learning.domains.configurations.redis.redis_service.RedisMailService;
+import com.learning.domains.constants.ErrorCode;
 import com.learning.domains.entities.EntityTest;
+import com.learning.domains.utils.ErrorCodeUtils;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +33,8 @@ public class TestController {
     }
 
     @GetMapping(value = "/kafka")
-    public Object testKafka() {
+    public CustomResponse<?> testKafka() {
         producerConfig.sendMessage(new EventDTO<>("NORMAL_MESSAGE", "normal message", new EntityTest(1L, "viet anh", 24)));
-        return "Testing Kafka ...";
+        return CustomResponse.ok("Send message success!");
     }
 }
