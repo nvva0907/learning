@@ -7,9 +7,12 @@ import com.learning.domains.constants.Constant;
 import com.learning.domains.constants.ErrorCode;
 import com.learning.domains.entities.User;
 import com.learning.domains.repositories.UserRepository;
+import com.learning.domains.security_config.CustomUserDetails;
 import com.learning.domains.services.UserService;
 import com.learning.domains.utils.ErrorCodeUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -56,5 +59,14 @@ public class UserServiceImpl implements UserService {
         if (!ObjectUtils.isEmpty(userExistByPhoneNumber)) {
             throw new BadRequestException(ErrorCodeUtils.getErrorMessage(ErrorCode.PHONE_NUMBER_ALREADY_USED));
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        return new CustomUserDetails(user);
     }
 }
