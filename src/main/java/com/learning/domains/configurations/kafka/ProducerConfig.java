@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.learning.domains.configurations.kafka.dtos.EventDTO;
-import com.learning.domains.entities.EntityTest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class ProducerConfig {
+public class ProducerConfig<T> {
     private final NewTopic kafkaTopic;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
@@ -25,7 +24,7 @@ public class ProducerConfig {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendMessage(EventDTO<EntityTest> eventDTO) {
+    public void sendMessage(EventDTO<T> eventDTO) {
         try {
             log.info("ORDER EVENT TYPE      => {}", eventDTO.getType());
             log.info("ORDER EVENT MESSAGE   => {}", eventDTO);
