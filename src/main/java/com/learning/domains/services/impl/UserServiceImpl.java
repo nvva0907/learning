@@ -13,6 +13,7 @@ import com.learning.domains.utils.ErrorCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserService {
     @Resource
     UserRepository userRepository;
 
+    @Resource
+    PasswordEncoder passwordEncoder;
+
     @Override
     public CustomResponse<?> signUp(UserSignUpDTO dto) {
         checkExistUser(dto);
@@ -34,7 +38,7 @@ public class UserServiceImpl implements UserService {
         newUser.setFullName(dto.getFullName());
         newUser.setUsername(dto.getUsername());
         newUser.setEmail(dto.getEmail());
-        newUser.setPassword(dto.getPassword());
+        newUser.setPassword(passwordEncoder.encode(dto.getPassword()));
         newUser.setPhoneNumber(dto.getPhoneNumber());
         newUser.setImage(dto.getImage());
         newUser.setRoles(Constant.USER_ROLE.USER);
@@ -44,6 +48,11 @@ public class UserServiceImpl implements UserService {
         // send mail to active account
         userRepository.save(newUser);
         return CustomResponse.ok(null);
+    }
+
+    @Override
+    public CustomResponse<?> getAll() {
+        return CustomResponse.ok(userRepository.findAll());
     }
 
     private void checkExistUser(UserSignUpDTO dto) {

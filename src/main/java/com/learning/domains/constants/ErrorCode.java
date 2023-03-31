@@ -15,4 +15,6 @@ public class ErrorCode {
 
     @ErrorMessage("Phone number already in use!")
     public static final String PHONE_NUMBER_ALREADY_USED = "PHONE_NUMBER_ALREADY_USED";
+    @ErrorMessage("Unauthorized !")
+    public static final String UNAUTHORIZED = "UNAUTHORIZED";
 }
