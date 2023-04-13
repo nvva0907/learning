@@ -54,4 +54,13 @@ public class User {
 
     @Column(name = "username")
     private String username;
+
+    public User(Long id, String fullName, String image, String email, String password, String phoneNumber) {
+        this.id = id;
+        this.fullName = fullName;
+        this.image = image;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+    }
 }

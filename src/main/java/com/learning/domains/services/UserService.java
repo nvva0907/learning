@@ -8,4 +8,6 @@ public interface UserService extends UserDetailsService {
     CustomResponse<?> signUp(UserSignUpDTO dto);
 
     CustomResponse<?> getAll();
+
+    int getAllSize();
 }

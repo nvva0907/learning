@@ -15,8 +15,8 @@ import org.springframework.data.redis.serializer.GenericToStringSerializer;
 
 import javax.annotation.Resource;
 
-@Configuration
-@EnableRedisRepositories
+//@Configuration
+//@EnableRedisRepositories
 public class RedisConfig {
 
     @Value("${spring.redis.host}")
@@ -31,43 +31,43 @@ public class RedisConfig {
     @Resource
     private RedisTopic topic;
 
-    @Bean
-    public JedisConnectionFactory jedisConnectionFactory() {
-        JedisConnectionFactory jedisConnectionFactory = null;
-        try {
-            RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
-            jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
-        } catch (RedisConnectionFailureException e) {
-            e.getMessage();
-        }
-        return jedisConnectionFactory;
-    }
-
-    @Bean
-    public RedisTemplate<Object, Object> redisTemplate() {
-        RedisTemplate<Object, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory());
-        template.setValueSerializer(new GenericToStringSerializer<>(String.class));
-        return template;
-    }
-
-    // Receiver setup
-    @Bean
-    public MailReceiver mailReceiver() {
-        return new MailReceiver();
-    }
-
-    @Bean
-    public MessageListenerAdapter mailAdapter() {
-        return new MessageListenerAdapter(mailReceiver());
-    }
-
-    // Listener Container Setup
-    @Bean
-    public RedisMessageListenerContainer messageListenerContainer() {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConfig.jedisConnectionFactory());
-        container.addMessageListener(mailAdapter(), topic.redisMailTopic());
-        return container;
-    }
+//    @Bean
+//    public JedisConnectionFactory jedisConnectionFactory() {
+//        JedisConnectionFactory jedisConnectionFactory = null;
+//        try {
+//            RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
+//            jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
+//        } catch (RedisConnectionFailureException e) {
+//            e.getMessage();
+//        }
+//        return jedisConnectionFactory;
+//    }
+//
+//    @Bean
+//    public RedisTemplate<Object, Object> redisTemplate() {
+//        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+//        template.setConnectionFactory(jedisConnectionFactory());
+//        template.setValueSerializer(new GenericToStringSerializer<>(String.class));
+//        return template;
+//    }
+//
+//    // Receiver setup
+//    @Bean
+//    public MailReceiver mailReceiver() {
+//        return new MailReceiver();
+//    }
+//
+//    @Bean
+//    public MessageListenerAdapter mailAdapter() {
+//        return new MessageListenerAdapter(mailReceiver());
+//    }
+//
+//    // Listener Container Setup
+//    @Bean
+//    public RedisMessageListenerContainer messageListenerContainer() {
+//        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+//        container.setConnectionFactory(redisConfig.jedisConnectionFactory());
+//        container.addMessageListener(mailAdapter(), topic.redisMailTopic());
+//        return container;
+//    }
 }

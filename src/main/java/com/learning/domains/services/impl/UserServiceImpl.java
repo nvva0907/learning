@@ -54,6 +54,10 @@ public class UserServiceImpl implements UserService {
     public CustomResponse<?> getAll() {
         return CustomResponse.ok(userRepository.findAll());
     }
+    @Override
+    public int getAllSize() {
+        return userRepository.findAll().size();
+    }
 
     private void checkExistUser(UserSignUpDTO dto) {
         User userExistByUsername = userRepository.findByUsername(dto.getUsername());

@@ -2,6 +2,6 @@
 #---local
 spring.profiles: local
 spring.profiles.include: common, local
-#---dev
-spring.profiles: dev
-spring.profiles.include: common, dev
+##---dev
+#spring.profiles: dev
+#spring.profiles.include: common, dev
