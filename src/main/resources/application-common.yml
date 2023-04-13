@@ -1,0 +1,10 @@
+spring-learning:
+  author: Viet_Anh
+  age: 18
+  career: Java_Developer
+  listNumberLike:
+    - 9
+    - 7
+  mapType:
+    key1: hello
+    key2: world
