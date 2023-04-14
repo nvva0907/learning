@@ -7,6 +7,7 @@ import com.learning.domains.constants.Constant;
 import com.learning.domains.constants.ErrorCode;
 import com.learning.domains.entities.User;
 import com.learning.domains.repositories.UserRepository;
+import com.learning.domains.repositories.elastic_search_repository.EUserRepository;
 import com.learning.domains.security_config.CustomUserDetails;
 import com.learning.domains.services.UserService;
 import com.learning.domains.utils.ErrorCodeUtils;
@@ -31,6 +32,9 @@ public class UserServiceImpl implements UserService {
     @Resource
     PasswordEncoder passwordEncoder;
 
+    @Resource
+    EUserRepository eUserRepository;
+
     @Override
     public CustomResponse<?> signUp(UserSignUpDTO dto) {
         checkExistUser(dto);
@@ -46,8 +50,15 @@ public class UserServiceImpl implements UserService {
         newUser.setCreatedDate(new Timestamp(new Date().getTime()));
         newUser.setCreatedBy(dto.getUsername());
         // send mail to active account
-        userRepository.save(newUser);
+        //userRepository.save(newUser);
+        // save into elastic search
+        eUserRepository.save(newUser);
         return CustomResponse.ok(null);
+    }
+
+    @Override
+    public CustomResponse<?> findByName(String name) {
+        return CustomResponse.ok(eUserRepository.findByUsername(name));
     }
 
     @Override

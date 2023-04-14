@@ -116,6 +116,12 @@
             <artifactId>spring-security-core</artifactId>
             <version>5.8.2</version>
         </dependency>
+        <!--elastic-search-repo-->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-elasticsearch</artifactId>
+        </dependency>
+
     </dependencies>
 
     <profiles>

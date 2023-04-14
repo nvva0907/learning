@@ -10,4 +10,6 @@ public interface UserService extends UserDetailsService {
     CustomResponse<?> getAll();
 
     int getAllSize();
+
+    CustomResponse<?> findByName(String name);
 }

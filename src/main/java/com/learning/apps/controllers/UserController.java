@@ -25,4 +25,9 @@ public class UserController {
         return userService.getAll();
     }
 
+    @GetMapping("/name/{name}")
+    public CustomResponse<?> getAll(@PathVariable(name = "name") String name) {
+        return userService.findByName(name);
+    }
+
 }
