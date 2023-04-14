@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.apache.kafka.clients.admin.NewTopic;
 
-//@Configuration
+@Configuration
 public class KafkaTopicConfig {
 
     @Value("${spring.kafka.topic.num-partition}")
@@ -16,9 +16,9 @@ public class KafkaTopicConfig {
     @Value("${spring.kafka.producer.template.default-topic}")
     private String commonTopic;
 
-//    @Bean
-//    @Primary
-//    public NewTopic kafkaCommonTopic() {
-//        return new NewTopic(commonTopic, numPartitions, replicationFactor);
-//    }
+    @Bean
+    @Primary
+    public NewTopic kafkaCommonTopic() {
+        return new NewTopic(commonTopic, numPartitions, replicationFactor);
+    }
 }
