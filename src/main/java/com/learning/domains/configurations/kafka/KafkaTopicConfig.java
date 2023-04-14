@@ -9,16 +9,11 @@ import org.apache.kafka.clients.admin.NewTopic;
 @Configuration
 public class KafkaTopicConfig {
 
-    @Value("${spring.kafka.topic.num-partition}")
-    private int numPartitions;
-    @Value("${spring.kafka.topic.replication-factor}")
-    private short replicationFactor;
-    @Value("${spring.kafka.producer.template.default-topic}")
+    @Value("${spring.kafka.template.default-topic}")
     private String commonTopic;
-
     @Bean
     @Primary
     public NewTopic kafkaCommonTopic() {
-        return new NewTopic(commonTopic, numPartitions, replicationFactor);
+        return new NewTopic(commonTopic, (short) 1, (short) 1);
     }
 }

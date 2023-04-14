@@ -8,3 +8,31 @@ spring-learning:
   mapType:
     key1: hello
     key2: world
+
+# Mail template
+mail:
+  content:
+    demo:
+      template: mail-demo
+
+# Mail config
+config:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: nvva0907@gmail.com
+    password: qrhtohfcghnjsniw
+    smtp:
+      starttls:
+        enable: true
+        require: true
+      auth: true
+
+# Server config
+server:
+  servlet:
+    context-path: /api
+  port: 8888
+spring:
+  main:
+    allow-bean-definition-overriding: true

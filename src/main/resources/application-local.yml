@@ -1,0 +1,45 @@
+# Kafka config
+spring:
+  kafka:
+    bootstrap-servers: 34.134.52.214:9092
+    producer:
+      acks: all
+      retries: 100
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        schema.registry.url: http://34.134.52.214:8081
+        generic:
+          avro:
+            reader: false
+        specific:
+          avro:
+            reader: true
+    template:
+      default-topic: common_topic
+# Database configuration
+  datasource:
+    url: jdbc:mysql://localhost:3306/learning?useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password:
+    dbcp2:
+      test-while-idle: true
+      validation-query: SELECT 1
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        format_sql: true
+    show-sql: false
+# Redis
+  redis:
+    host: 34.134.52.214
+    port: 6379
+  data:
+    jest:
+      uris: http://34.134.52.214:9200
+elasticsearch:
+  host: 34.134.52.214
+  port: 9200
+  clustername: docker-cluster

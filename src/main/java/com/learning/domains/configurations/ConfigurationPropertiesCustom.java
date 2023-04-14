@@ -8,10 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 @PropertySource("classpath:application.yml")
-@ConfigurationProperties(prefix = "spring-learning")
+@ConfigurationProperties(prefix = "spring")
 public class ConfigurationPropertiesCustom {
 
-    private String author;
-    private int age;
-    private String career;
 }
