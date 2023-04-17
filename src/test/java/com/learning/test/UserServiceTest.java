@@ -26,7 +26,7 @@ public class UserServiceTest {
     public void mockUserRepository(){
         List<User> userList = new ArrayList<>();
         for(int i = 0 ; i < 10; i++){
-            userList.add(new User(1L,"Nguyen Van"+ i, null,i+"@gmail.com","password","0914917499" + i));
+            userList.add(new User());
         }
         Mockito.when(userRepository.findAll())
                 .thenReturn(userList);

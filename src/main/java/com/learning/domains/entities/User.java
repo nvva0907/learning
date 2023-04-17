@@ -1,9 +1,6 @@
 package com.learning.domains.entities;
 
 import lombok.*;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -16,18 +13,13 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Document(indexName = "learning", type = "user", refreshInterval = "-1")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public Long id;
 
-    @org.springframework.data.annotation.Id
-    private Long esId;
-
     @Column(name = "full_name")
-    @Field(type = FieldType.Text, name = "fullName")
     private String fullName;
 
     @Column(name = "image")
@@ -65,10 +57,9 @@ public class User {
 
 
 
-    public User(Long id, String fullName, String image, String email, String password, String phoneNumber) {
+    public User(Long id, String fullName, String email, String password, String phoneNumber) {
         this.id = id;
         this.fullName = fullName;
-        this.image = image;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;

@@ -21,13 +21,11 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public CustomResponse<?> getAll() {
-        return userService.getAll();
+    public CustomResponse<?> getAll(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                    @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
+                                    @RequestParam(value = "quickSearch", required = false) String quickSearch) {
+        return userService.fullTextSearch(page, size, quickSearch);
     }
 
-    @GetMapping("/name/{name}")
-    public CustomResponse<?> getAll(@PathVariable(name = "name") String name) {
-        return userService.findByName(name);
-    }
 
 }

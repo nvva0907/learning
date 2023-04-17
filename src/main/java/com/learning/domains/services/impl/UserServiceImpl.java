@@ -1,17 +1,32 @@
 package com.learning.domains.services.impl;
 
+import com.learning.apps.dtos.PageCustomDTO;
 import com.learning.apps.dtos.UserSignUpDTO;
 import com.learning.apps.exceptions.BadRequestException;
 import com.learning.apps.responses.CustomResponse;
 import com.learning.domains.constants.Constant;
 import com.learning.domains.constants.ErrorCode;
 import com.learning.domains.entities.User;
+import com.learning.domains.entities.UserDocument;
+import com.learning.domains.mappers.document_mapper.UserMapper;
 import com.learning.domains.repositories.UserRepository;
-import com.learning.domains.repositories.elastic_search_repository.ElasticUserRepositoryCustom;
+import com.learning.domains.repositories.elastic_search_repository.UserDocumentRepository;
 import com.learning.domains.security_config.CustomUserDetails;
 import com.learning.domains.services.UserService;
 import com.learning.domains.utils.ErrorCodeUtils;
+import com.learning.domains.utils.PageUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +35,10 @@ import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -33,7 +51,13 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder passwordEncoder;
 
     @Resource
-    ElasticUserRepositoryCustom repoElastic;
+    UserDocumentRepository userDocumentRepository;
+
+    @Resource
+    UserMapper userMapper;
+
+    @Resource
+    PageUtils pageUtils;
 
     @Override
     public CustomResponse<?> signUp(UserSignUpDTO dto) {
@@ -52,22 +76,43 @@ public class UserServiceImpl implements UserService {
         // send mail to active account
         userRepository.save(newUser);
         // save into elastic search
-        repoElastic.save(newUser.toEsUser());
+        userDocumentRepository.save(mapUser(newUser));
         return CustomResponse.ok(null);
     }
 
-    @Override
-    public CustomResponse<?> findByName(String name) {
-        return CustomResponse.ok(repoElastic.findByPhoneNumber(name));
+    private UserDocument mapUser(User user) {
+        UserDocument userDocument = userMapper.toDTO(user);
+        userDocument.setRoles(Arrays.asList(user.getRoles().trim().split(",")));
+        return userDocument;
     }
 
     @Override
-    public CustomResponse<?> getAll() {
-        return CustomResponse.ok(userRepository.findAll());
-    }
-    @Override
     public int getAllSize() {
         return userRepository.findAll().size();
+    }
+
+    @Override
+    public CustomResponse<?> fullTextSearch(Integer page, Integer size, String quickSearch) {
+        QueryBuilder exactMatchQuery = QueryBuilders.boolQuery()
+                .should(QueryBuilders.termQuery("fullName.keyword", quickSearch))
+                .should(QueryBuilders.termQuery("username.keyword", quickSearch))
+                .should(QueryBuilders.termQuery("phoneNumber.keyword", quickSearch))
+                .should(QueryBuilders.termQuery("email.keyword", quickSearch));
+
+        QueryBuilder fuzzyMatchQuery = QueryBuilders.boolQuery()
+                .should(QueryBuilders.fuzzyQuery("fullName", quickSearch))
+                .should(QueryBuilders.fuzzyQuery("username", quickSearch))
+                .should(QueryBuilders.fuzzyQuery("phoneNumber", quickSearch))
+                .should(QueryBuilders.fuzzyQuery("email", quickSearch));
+
+        QueryBuilder combinedQuery = QueryBuilders.boolQuery()
+                .must(exactMatchQuery)
+                .should(fuzzyMatchQuery);
+
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(combinedQuery).build();
+        Page<UserDocument> userDocumentPage = userDocumentRepository.search(searchQuery);
+        PageCustomDTO<UserDocument> response = pageUtils.getPage(userDocumentPage.getContent(), page, size, userDocumentPage.getTotalElements(), userDocumentPage.getTotalPages());
+        return CustomResponse.ok(response);
     }
 
     private void checkExistUser(UserSignUpDTO dto) {

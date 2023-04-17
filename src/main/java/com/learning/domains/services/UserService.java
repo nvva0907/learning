@@ -7,9 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public interface UserService extends UserDetailsService {
     CustomResponse<?> signUp(UserSignUpDTO dto);
 
-    CustomResponse<?> getAll();
-
     int getAllSize();
 
-    CustomResponse<?> findByName(String name);
+    CustomResponse<?> fullTextSearch(Integer page, Integer size, String quickSearch);
 }
