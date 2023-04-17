@@ -52,13 +52,13 @@ public class UserServiceImpl implements UserService {
         // send mail to active account
         userRepository.save(newUser);
         // save into elastic search
-        repoElastic.save(newUser);
+        repoElastic.save(newUser.toEsUser());
         return CustomResponse.ok(null);
     }
 
     @Override
     public CustomResponse<?> findByName(String name) {
-        return CustomResponse.ok(repoElastic.findByUsername(name));
+        return CustomResponse.ok(repoElastic.findByPhoneNumber(name));
     }
 
     @Override

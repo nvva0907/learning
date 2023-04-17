@@ -16,59 +16,51 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-//@Document(indexName = "learning", type= "user")
+@Document(indexName = "learning", type = "user", refreshInterval = "-1")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public Long id;
 
+    @org.springframework.data.annotation.Id
+    private Long esId;
+
     @Column(name = "full_name")
-//    @Field(type = FieldType.Text, name = "fullName")
+    @Field(type = FieldType.Text, name = "fullName")
     private String fullName;
 
     @Column(name = "image")
-//    @Field(type = FieldType.Text, name = "image")
     private String image;
 
     @Column(name = "email")
-//    @Field(type = FieldType.Text, name = "email")
     private String email;
 
     @Column(name = "password")
-//    @Field(type = FieldType.Text, name = "password")
     private String password;
 
     @Column(name = "phone_number")
-//    @Field(type = FieldType.Text, name = "phoneNumber")
     private String phoneNumber;
 
     @Column(name = "roles")
-//    @Field(type = FieldType.Text, name = "roles")
     private String roles;
 
     @Column(name = "status")
-//    @Field(type = FieldType.Text, name = "status")
     private String status;
 
     @Column(name = "created_date")
-//    @Field(type = FieldType.Date, name = "createdDate")
     private Timestamp createdDate;
 
     @Column(name = "modified_date")
-//    @Field(type = FieldType.Date, name = "modifiedDate")
     private Timestamp modifiedDate;
 
     @Column(name = "created_by")
-//    @Field(type = FieldType.Text, name = "createdBy")
     private String createdBy;
 
     @Column(name = "modified_by")
-//    @Field(type = FieldType.Text, name = "modifiedBy")
     private String modifiedBy;
 
     @Column(name = "username")
-//    @Field(type = FieldType.Text, name = "username")
     private String username;
 
 

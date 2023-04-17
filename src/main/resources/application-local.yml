@@ -36,10 +36,9 @@ spring:
   redis:
     host: 34.134.52.214
     port: 6379
-  data:
-    jest:
-      uris: http://34.134.52.214:9200
+
 elasticsearch:
   host: 34.134.52.214
   port: 9200
-  clustername: docker-cluster
+  cluster-name: docker-cluster
+  cluster-nodes: 34.134.52.214:9200
