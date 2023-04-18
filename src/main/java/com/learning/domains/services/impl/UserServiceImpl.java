@@ -13,6 +13,7 @@ import com.learning.domains.repositories.UserRepository;
 import com.learning.domains.repositories.elastic_search_repository.UserDocumentRepository;
 import com.learning.domains.security_config.CustomUserDetails;
 import com.learning.domains.services.UserService;
+import com.learning.domains.utils.ElasticSearchUtils;
 import com.learning.domains.utils.ErrorCodeUtils;
 import com.learning.domains.utils.PageUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +58,10 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
 
     @Resource
-    PageUtils pageUtils;
+    PageUtils<UserDocument> pageUtils;
+
+    @Resource
+    ElasticSearchUtils elasticSearchUtils;
 
     @Override
     public CustomResponse<?> signUp(UserSignUpDTO dto) {
@@ -93,24 +97,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CustomResponse<?> fullTextSearch(Integer page, Integer size, String quickSearch) {
-        QueryBuilder exactMatchQuery = QueryBuilders.boolQuery()
-                .should(QueryBuilders.termQuery("fullName.keyword", quickSearch))
-                .should(QueryBuilders.termQuery("username.keyword", quickSearch))
-                .should(QueryBuilders.termQuery("phoneNumber.keyword", quickSearch))
-                .should(QueryBuilders.termQuery("email.keyword", quickSearch));
-
-        QueryBuilder fuzzyMatchQuery = QueryBuilders.boolQuery()
-                .should(QueryBuilders.fuzzyQuery("fullName", quickSearch))
-                .should(QueryBuilders.fuzzyQuery("username", quickSearch))
-                .should(QueryBuilders.fuzzyQuery("phoneNumber", quickSearch))
-                .should(QueryBuilders.fuzzyQuery("email", quickSearch));
-
-        QueryBuilder combinedQuery = QueryBuilders.boolQuery()
-                .must(exactMatchQuery)
-                .should(fuzzyMatchQuery);
-
-        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(combinedQuery).build();
-        Page<UserDocument> userDocumentPage = userDocumentRepository.search(searchQuery);
+        Page<UserDocument> userDocumentPage = elasticSearchUtils.quickSearch(PageRequest.of(page - 1, size), quickSearch, userDocumentRepository, "fullName", "email", "phoneNumber", "username");
         PageCustomDTO<UserDocument> response = pageUtils.getPage(userDocumentPage.getContent(), page, size, userDocumentPage.getTotalElements(), userDocumentPage.getTotalPages());
         return CustomResponse.ok(response);
     }
