@@ -10,4 +10,6 @@ public interface UserService extends UserDetailsService {
     int getAllSize();
 
     CustomResponse<?> fullTextSearch(Integer page, Integer size, String quickSearch);
+
+    CustomResponse<?> update(UserSignUpDTO dto, Long id);
 }

@@ -17,12 +17,14 @@ import com.learning.domains.utils.ElasticSearchUtils;
 import com.learning.domains.utils.ErrorCodeUtils;
 import com.learning.domains.utils.PageUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.common.recycler.Recycler;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,6 +103,21 @@ public class UserServiceImpl implements UserService {
         Page<UserDocument> userDocumentPage = elasticSearchUtils.quickSearch(PageRequest.of(page - 1, size), quickSearch, userDocumentRepository, "fullName", "email", "phoneNumber", "username");
         PageCustomDTO<UserDocument> response = pageUtils.getPage(userDocumentPage.getContent(), page, size, userDocumentPage.getTotalElements(), userDocumentPage.getTotalPages());
         return CustomResponse.ok(response);
+    }
+
+    @Override
+    @Transactional
+    public CustomResponse<?> update(UserSignUpDTO dto, Long id) {
+        User user = null;
+        try {
+            user = userRepository.findUserByIdForUpdateCustom(id);
+        } catch (PessimisticLockingFailureException ex) {
+            throw new BadRequestException(ErrorCodeUtils.getErrorMessage(ErrorCode.CAN_NOT_UPDATE_USER));
+        }
+        for (int i = 0; i < 100000; i++) {
+            System.out.println(i);
+        }
+        return CustomResponse.ok(null);
     }
 
     private void checkExistUser(UserSignUpDTO dto) {

@@ -17,4 +17,6 @@ public class ErrorCode {
     public static final String PHONE_NUMBER_ALREADY_USED = "PHONE_NUMBER_ALREADY_USED";
     @ErrorMessage("Unauthorized !")
     public static final String UNAUTHORIZED = "UNAUTHORIZED";
+    @ErrorMessage("Can not update user !")
+    public static final String CAN_NOT_UPDATE_USER = "CAN_NOT_UPDATE_USER";
 }

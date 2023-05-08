@@ -27,5 +27,9 @@ public class UserController {
         return userService.fullTextSearch(page, size, quickSearch);
     }
 
+    @PutMapping("/update/{id}")
+    public CustomResponse<?> update(@Valid @RequestBody UserSignUpDTO dto, @PathVariable Long id) {
+        return userService.update(dto, id);
+    }
 
 }
