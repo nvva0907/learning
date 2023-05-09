@@ -36,3 +36,18 @@ server:
 spring:
   main:
     allow-bean-definition-overriding: true
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+    properties:
+      org:
+        quartz:
+          jobStore:
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            useProperties: true
+            dataSource: myDS
+          dataSource:
+            myDS:
+              driver: com.mysql.jdbc.Driver
+

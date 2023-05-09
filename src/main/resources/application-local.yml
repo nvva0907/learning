@@ -17,7 +17,16 @@ spring:
             reader: true
     template:
       default-topic: common_topic
-# Database configuration
+  quartz:
+    properties:
+      org:
+        quartz:
+          dataSource:
+            myDS:
+              URL: jdbc:mysql://localhost:3306/learning?useSSL=false&useUnicode=true&characterEncoding=UTF-8
+              user: root
+              password:
+  # Database configuration
   datasource:
     url: jdbc:mysql://localhost:3306/learning?useSSL=false&useUnicode=true&characterEncoding=UTF-8
     username: root
